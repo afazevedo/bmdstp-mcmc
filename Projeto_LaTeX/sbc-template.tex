@@ -48,14 +48,14 @@
 
 \title{Proposta de projeto: MCMC}
 
-\author{Amanda Ferreira de Azevedo\inst{1}, Wanderson Lomenha\inst{1}}
+\author{Amanda Ferreira de Azevedo\inst{1}, Wanderson Douglas Lomenha Pereira\inst{1}}
 
 
 \address{
 	Universidade Federal do Rio de Janeiro\\
 	Instituto Alberto Luiz Coimbra de Pós-Graduação e Pesquisa em Engenharia\\
 	Programa de Engenharia de Sistemas e Computação
-	\email{\{afazevedo,wanderson\}@cos.ufrj.br}
+	\email{\{afazevedo,wlomenha\}@cos.ufrj.br}
 }
 
 \begin{document} 
@@ -152,9 +152,22 @@ Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunt
 
 \section{Proposta}
 
-Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. Neste projeto, gostaríamos de construir algoritmos aleatórios nos dê soluções de qualidade com tempos de execução pequenos. Além disso, nos interessa encontrar limites superiores eficientes para poderem ser, eventualmente, utilizados em técnicas mais avançadas de otimização. 
+Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Neste projeto, gostaríamos de construir:
 
-Como um primeiro passo, gostaríamos de criar um algoritmo de Monte Carlo que gere árvores $T$ geradoras, viáveis ou não, sob uma certa estrutura. Em seguida, combinar esse algoritmo a uma busca local, no intuito de viabilizar o processo. Além disso, gostaríamos de implementar uma Cadeia de Markov utilizando passeios aleatórios, com o mesmo objetivo. Uma outra abordagem que nos interessa seguir nesse projeto é de investigar a possibilidade de resolução do problema utilizando a metaheurística \textit{simulated annealing}. Para finalizar, pretendemos fazer uma comparação dessas técnicas com os resultados exatos, analisando tempo e eficiência de cada um. 
+\begin{enumerate}
+	\item Algoritmos de \textbf{Monte Carlo} que nos dê soluções de qualidade aliados a tempos de execução pequenos, no intuito de encontrar limites superiores eficientes para serem utilizados em técnicas mais avançadas de otimização. 
+	\item Criação de uma \textbf{cadeia de Markov} no intuito de resolver o problema de forma aproximativa utilizando \textbf{Simulated Annealing}.
+\end{enumerate}
+
+Para (\textbf{1}), pensamos em utilizar a técnica \textbf{rejection sampling} para criar árvores geradoras viáveis a partir de árvores geradoras aleatórias melhorarando sua qualidade com uma busca local.\\
+
+Para (\textbf{2}), pensamos em dois caminhos:
+\begin{itemize}
+	\item Cada estado da cadeia de Markov será uma solução viável de baixa qualidade (diâmetros grandes) para o problema gerada pelo \textit{algoritmo de Prim}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu diâmetro, priorizando minimizar o diâmetro. 
+	\item Cada estado da cadeia de Markov será uma solução inviável (custo maior que o requisitado) de menor diâmetro possível. O cálculo do menor diâmetro possível em uma árvore geradora é um problema \textit{fácil de resolver}, pois se assemelha ao \textit{1-center problem} \cite{Hassin1995}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu custo total, onde priorizaremos minimizar o custo e tornar o problema viável.
+\end{itemize}  
+
+Para finalizar, pretendemos fazer uma comparação dessas técnicas com os resultados exatos, analisando tempo e eficiência de cada um. 
 
 
 %Figure and table captions should be centered if less than one line
@@ -173,7 +186,7 @@ Como um primeiro passo, gostaríamos de criar um algoritmo de Monte Carlo que ge
 %\end{table}
 
 
-\section{References}
+%\section{References}
 
 %Bibliographic references must be unambiguous and uniform.  We recommend giving
 %the author names references in brackets, e.g. \cite{knuth:84},
