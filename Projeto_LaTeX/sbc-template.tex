@@ -46,6 +46,7 @@
      
 %\sloppy
 
+
 \title{Proposta de projeto: Monte Carlo e Cadeias de Markov}
 
 \author{Amanda Ferreira de Azevedo\inst{1}, Wanderson Douglas Lomenha Pereira\inst{1}}
@@ -83,7 +84,7 @@
 \section{Definição do problema}
 
 
-Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunto de vértices e E é o conjunto de arestas. Associe um custo não-negativo $c_e$ à cada aresta $e = \{i,j\} \in E$. Denota-se por $d_{ij}$ ao comprimento do menor caminho simples ligando os vértices $i,j \in V$, ou seja, à \textit{distância} entre eles no grafo $G$. Por fim, o \textit{diâmetro} de $G$, $d$, é dado pela maior distância existente entre qualquer par de vértices de $G$, em termos de número de arestas. Além disso, seja \textit{B} um número positivo que impõe um limite superior para o quanto se pode gastar na escolha das arestas de uma árvore geradora $T = (V_T, E_T)$. Denomina-se por \textit{Budget Minimum Diameter Spanning Tree Problem} (BMDSTP) o problema de encontrar uma árvore geradora $T$ tal que a soma total de suas arestas não ultrapasse $B$ e seu diâmetro seja o menor possível. O problema foi proposto por \cite{Plesnik1981}, sob uma denominação imprecisa onde foi identificado como NP-Difícil. Uma ilustração de uma árvore geradora ótima para o problema é dada na Figura \ref{fig2}. 
+Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunto de vértices e E é o conjunto de arestas. Associe um custo não-negativo $c_e$ à cada aresta $e = \{i,j\} \in E$. Denota-se por $d_{ij}$ ao comprimento do menor caminho simples ligando os vértices $i,j \in V$, ou seja, à \textit{distância} entre eles no grafo $G$. Por fim, o \textit{diâmetro} de $G$, $d$, é dado pela maior distância existente entre qualquer par de vértices de $G$, em termos de número de arestas. Além disso, seja \textit{B} um número positivo que impõe um limite superior para o quanto se pode gastar na escolha das arestas de uma árvore geradora $T = (V_T, E_T)$. Denomina-se por \textit{Budget Minimum Diameter Spanning Tree Problem} (BMDSTP) o problema de encontrar uma árvore geradora $T$ tal que a soma total do custo de suas arestas não ultrapasse $B$ e seu diâmetro seja o menor possível. O problema foi proposto por \cite{Plesnik1981}, sob uma denominação imprecisa onde foi identificado como NP-Difícil. Uma ilustração de uma árvore geradora ótima para o problema é dada na Figura \ref{fig2}. 
 
 \begin{figure}[ht]
 	\begin{center}
