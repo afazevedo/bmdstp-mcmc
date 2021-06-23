@@ -46,7 +46,7 @@
      
 %\sloppy
 
-\title{Proposta de projeto: MCMC}
+\title{Proposta de projeto: Monte Carlo e Cadeias de Markov}
 
 \author{Amanda Ferreira de Azevedo\inst{1}, Wanderson Douglas Lomenha Pereira\inst{1}}
 
@@ -83,7 +83,7 @@
 \section{Definição do problema}
 
 
-Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunto de vértices e E é o conjunto de arestas. Associe um custo não-negativo $c_e$ à cada aresta $e = \{i,j\} \in E$. Denota-se por $d_{ij}$ ao comprimento do menor caminho simples ligando os vértices $i,j \in V$, ou seja, à \textit{distância} entre eles no grafo $G$. Por fim, o \textit{diâmetro} de $G$, $d$, é dado pela maior distância existente entre qualquer par de vértices de $G$, em termos de número de arestas. Além disso, seja \textit{B} um número positivo que impõe um limite superior para o quanto se pode gastar na escolha das arestas de uma árvore geradora $T = (V_T, E_T)$. Denomina-se por \textit{Budget Minimum Diameter Spanning Tree Problem} (BDSTP) o problema de encontrar uma árvore geradora $T$ tal que a soma total de suas arestas não ultrapasse $B$ e seu diâmetro seja o menor possível. O problema foi proposto por \cite{Plesnik1981}, sob uma denominação imprecisa onde foi identificado como NP-Difícil. Uma ilustração de uma árvore geradora ótima para o problema é dada na Figura \ref{fig2}. 
+Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunto de vértices e E é o conjunto de arestas. Associe um custo não-negativo $c_e$ à cada aresta $e = \{i,j\} \in E$. Denota-se por $d_{ij}$ ao comprimento do menor caminho simples ligando os vértices $i,j \in V$, ou seja, à \textit{distância} entre eles no grafo $G$. Por fim, o \textit{diâmetro} de $G$, $d$, é dado pela maior distância existente entre qualquer par de vértices de $G$, em termos de número de arestas. Além disso, seja \textit{B} um número positivo que impõe um limite superior para o quanto se pode gastar na escolha das arestas de uma árvore geradora $T = (V_T, E_T)$. Denomina-se por \textit{Budget Minimum Diameter Spanning Tree Problem} (BMDSTP) o problema de encontrar uma árvore geradora $T$ tal que a soma total de suas arestas não ultrapasse $B$ e seu diâmetro seja o menor possível. O problema foi proposto por \cite{Plesnik1981}, sob uma denominação imprecisa onde foi identificado como NP-Difícil. Uma ilustração de uma árvore geradora ótima para o problema é dada na Figura \ref{fig2}. 
 
 \begin{figure}[ht]
 	\begin{center}
@@ -152,20 +152,20 @@ Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunt
 
 \section{Proposta}
 
-Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Neste projeto, gostaríamos de construir:
+Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Assim, gostaríamos de construir:
 
 \begin{enumerate}
-	\item Algoritmos de \textbf{Monte Carlo} que nos dê soluções de qualidade aliados a tempos de execução pequenos, no intuito de encontrar limites superiores eficientes para serem utilizados em técnicas mais avançadas de otimização. 
+	\item Algoritmos de \textbf{Monte Carlo} que nos dê soluções de qualidade aliados a tempos de execução pequenos. 
 	\item Criação de uma \textbf{cadeia de Markov} no intuito de resolver o problema de forma aproximativa utilizando \textbf{Simulated Annealing}.
 \end{enumerate}
 
-Para (\textbf{1}), pensamos em utilizar a técnica \textbf{rejection sampling} para criar árvores geradoras viáveis a partir de árvores geradoras aleatórias melhorarando sua qualidade com uma busca local.\\
+%Para (\textbf{1}), pensamos em utilizar a técnica \textbf{rejection sampling} para criar árvores geradoras viáveis a partir de árvores geradoras aleatórias melhorarando sua qualidade com uma busca local.\\
 
-Para (\textbf{2}), pensamos em dois caminhos:
-\begin{itemize}
-	\item Cada estado da cadeia de Markov será uma solução viável de baixa qualidade (diâmetros grandes) para o problema gerada pelo \textit{algoritmo de Prim}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu diâmetro, priorizando minimizar o diâmetro. 
-	\item Cada estado da cadeia de Markov será uma solução inviável (custo maior que o requisitado) de menor diâmetro possível. O cálculo do menor diâmetro possível em uma árvore geradora é um problema \textit{fácil de resolver}, pois se assemelha ao \textit{1-center problem} \cite{Hassin1995}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu custo total, onde priorizaremos minimizar o custo e tornar o problema viável.
-\end{itemize}  
+%Para (\textbf{2}), pensamos em dois caminhos:
+%\begin{itemize}
+%	\item Cada estado da cadeia de Markov será uma solução viável de baixa qualidade (diâmetros grandes) para o problema gerada pelo \textit{algoritmo de Prim}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu diâmetro, priorizando minimizar o diâmetro. 
+%	\item Cada estado da cadeia de Markov será uma solução inviável (custo maior que o requisitado) de menor diâmetro possível. O cálculo do menor diâmetro possível em uma árvore geradora é um problema \textit{fácil de resolver}, pois se assemelha ao \textit{1-center problem} \cite{Hassin1995}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu custo total, onde priorizaremos minimizar o custo e tornar o problema viável.
+%\end{itemize}  
 
 Para finalizar, pretendemos fazer uma comparação dessas técnicas com os resultados exatos, analisando tempo e eficiência de cada um. 
 
