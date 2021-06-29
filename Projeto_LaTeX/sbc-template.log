@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.6) (preloaded format=pdflatex 2021.6.11)  23 JUN 2021 20:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.6) (preloaded format=pdflatex 2021.6.11)  28 JUN 2021 19:24
 entering extended mode
 **./sbc-template.tex
 (sbc-template.tex
@@ -732,7 +732,11 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 (D:\miktex\tex/latex/tools\hhline.sty
 Package: hhline 2020/01/04 v2.04 Table rule package (DPC)
 )
-(D:\miktex\tex/latex/algorithms\algorithm.sty
+(D:\miktex\tex/latex/outlines\outlines.sty
+Package: outlines 2012/1/23 1.1 Ch. Pecheur
+ (D:\miktex\tex/latex/base\ifthen.sty
+Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
+)) (D:\miktex\tex/latex/algorithms\algorithm.sty
 Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
 nment
 
@@ -743,8 +747,6 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \float@box=\box68
 \@float@everytoks=\toks39
 \@floatcapt=\box69
-) (D:\miktex\tex/latex/base\ifthen.sty
-Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
 )
 \@float@every@algorithm=\toks40
 \c@algorithm=\count317
@@ -895,33 +897,33 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip61
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 45.
+Package hyperref Info: Option `colorlinks' set `true' on input line 46.
 LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 6
-2.
+3.
 
 (D:\miktex\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 ) (sbc-template.aux)
 \openout1 = `sbc-template.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 63.
+LaTeX Font Info:    ... okay on input line 63.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -982,7 +984,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (D:\miktex\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring ON on input line 62.
+Package hyperref Info: Link coloring ON on input line 63.
 
 (D:\miktex\tex/latex/hyperref\nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -995,79 +997,89 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count341
 )
-LaTeX Info: Redefining \ref on input line 62.
-LaTeX Info: Redefining \pageref on input line 62.
-LaTeX Info: Redefining \nameref on input line 62.
+LaTeX Info: Redefining \ref on input line 63.
+LaTeX Info: Redefining \pageref on input line 63.
+LaTeX Info: Redefining \nameref on input line 63.
  (sbc-template.out)
 (sbc-template.out)
 \@outlinefile=\write4
 \openout4 = `sbc-template.out'.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 65.
+(Font)              <12> on input line 66.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 65.
+(Font)              <8> on input line 66.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 65.
+(Font)              <6> on input line 66.
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 6
-5.
+6.
  (D:\miktex\tex/latex/psnfss\ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 6
-5.
+6.
 
 (D:\miktex\tex/latex/psnfss\omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 65.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 66.
 LaTeX Font Info:    Trying to load font information for OT1+phv on input line 1
-49.
+50.
  (D:\miktex\tex/latex/psnfss\ot1phv.fd
 File: ot1phv.fd 2020/03/25 scalable font definitions for OT1/phv.
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 156.
+(Font)              <7> on input line 157.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 156.
+(Font)              <5> on input line 157.
 
-Underfull \hbox (badness 10000) in paragraph at lines 156--156
+Underfull \hbox (badness 10000) in paragraph at lines 157--157
 [][][][][]$\OT1/pcr/m/n/10 https : / / www . cos . ufrj . br / index . php / pt
 -[]BR / publicacoes-[]pesquisa /
  []
 
 
-Overfull \hbox (1.47185pt too wide) in paragraph at lines 156--157
+Overfull \hbox (1.47185pt too wide) in paragraph at lines 157--158
 \OT1/ptm/m/n/12 po-ten-cial de aplica[][]oes pr[]aticas. Em es-pe-cial, esse pr
 o-blema foi in-ves-ti-gado na disserta[][]ao
  []
 
-(sbc-template.bbl) [1
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+60.
+(D:\miktex\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+) [1
 
-{C:/Users/mndzv/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] (sbc-template.a
-ux)
+{C:/Users/mndzv/AppData/Local/MiKTeX/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+[][][][][]$\OT1/pcr/m/n/10 https : / / www . cos . ufrj . br / index . php / pt
+-[]BR / publicacoes-[]pesquisa /
+ []
+
+(sbc-template.bbl) [2] (sbc-template.aux)
 Package rerunfilecheck Info: File `sbc-template.out' has not changed.
-(rerunfilecheck)             Checksum: D292500C7EFF00F58AD5C4EED3AACB77;243.
+(rerunfilecheck)             Checksum: 8BEF337A84722ABCE79C5272B019D566;309.
  ) 
 Here is how much of TeX's memory you used:
- 28920 strings out of 478864
- 555552 string characters out of 2865145
- 919818 words of memory out of 3000000
- 46173 multiletter control sequences out of 15000+600000
- 422364 words of font info for 59 fonts, out of 8000000 for 9000
+ 28987 strings out of 478864
+ 556406 string characters out of 2865145
+ 920182 words of memory out of 3000000
+ 46232 multiletter control sequences out of 15000+600000
+ 422678 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  85i,11n,111p,1169b,913s stack positions out of 5000i,500n,10000p,200000b,80000s
 {D:/miktex/fonts/enc/dvips/base/8r.enc}<D:/miktex/fonts/type1/public/amsfonts
 /cm/cmmi12.pfb><D:/miktex/fonts/type1/public/amsfonts/cm/cmmi8.pfb><D:/miktex/f
 onts/type1/public/amsfonts/cm/cmr12.pfb><D:/miktex/fonts/type1/public/amsfonts/
 cm/cmr8.pfb><D:/miktex/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/miktex/fon
-ts/type1/urw/courier/ucrr8a.pfb><D:/miktex/fonts/type1/urw/helvetic/uhvb8a.pfb>
-<D:/miktex/fonts/type1/urw/times/utmb8a.pfb><D:/miktex/fonts/type1/urw/times/ut
-mr8a.pfb><D:/miktex/fonts/type1/urw/times/utmri8a.pfb>
-Output written on sbc-template.pdf (1 page, 134239 bytes).
+ts/type1/public/amsfonts/cm/cmsy8.pfb><D:/miktex/fonts/type1/urw/courier/ucrr8a
+.pfb><D:/miktex/fonts/type1/urw/helvetic/uhvb8a.pfb><D:/miktex/fonts/type1/urw/
+times/utmb8a.pfb><D:/miktex/fonts/type1/urw/times/utmr8a.pfb><D:/miktex/fonts/t
+ype1/urw/times/utmri8a.pfb>
+Output written on sbc-template.pdf (2 pages, 151713 bytes).
 PDF statistics:
- 110 PDF objects out of 1000 (max. 8388607)
+ 121 PDF objects out of 1000 (max. 8388607)
  9 named destinations out of 1000 (max. 500000)
  125 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -17,6 +17,7 @@
 \usepackage{hhline}
 \usepackage{array}
 \usepackage{color}
+\usepackage{outlines}
 
 \tikzset{
 	square/.style={%
@@ -151,14 +152,27 @@ Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunt
 \end{figure}
 
 
-\section{Proposta}
+\section{Proposta de Pesquisa}
 
-Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Assim, gostaríamos de construir:
+Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Assim, gostaríamos de construir uma cadeia de Markov base da seguinte maneira: 
 
-\begin{enumerate}
-	\item Algoritmos de \textbf{Monte Carlo} que nos dê soluções de qualidade aliados a tempos de execução pequenos. 
-	\item Criação de uma \textbf{cadeia de Markov} no intuito de resolver o problema de forma aproximativa utilizando \textbf{Simulated Annealing}.
-\end{enumerate}
+\begin{outline}
+	\1 \textbf{Estados}:
+		\2 Árvores geradoras de $G$. 
+	\1 \textbf{Transições:} 
+		\2 Seja $S_t$ o estado atual:
+	
+			\3 Escolha uniformemente uma aresta $e \in E(G)-E(S_t)$ e adicione à árvore $S_t$, formando um ciclo.
+			\3 Pegue uma aresta $\bar{e}$ aleatória uniformemente do ciclo $C \subseteq E(S_t)$ e delete ela. 
+			\3 Se $\{\bar{e}\} = \{e\}$, então $S_t = S_{t+1}$
+			\3 Caso contrário $S_{t+1} = S_t + \{e\} - \{\bar{e}\}$.
+\end{outline}
+
+Essa cadeia induz um \textbf{passeio aleatório (lazy)} em um grafo não-direcionado associado e todas as transições possuem a mesma probabilidade $\frac{1}{|C|(m-n+1)}$ uniforme. 
+
+Para lidar com a otimização, faremos uso da metaheurística \textit{Simulated Annealing}. Para isso, criaremos uma nova CM com distribuição estacionária igual a distribuição de \textit{Botltzmann}. Usaremos \textit{Metropolis-Hastings} para criar uma agenda de resfriamento, a partir da probabilidade de aceite. A distribuição de \textit{Botltzmann} utiliza $f(s)$, uma função sobre os estados da cadeia. No nosso caso, $f(s)$ retornará o diâmetro da árvore associada ao estado $s$ correspondente e nosso objetivo é minimizá-lo. Além disso, para lidar com a restrição de capacidade, pretendemos trabalhar com penalizações, tanto diretamente no custo ou em $f$. Para finalizar, faremos uma comparação dessas técnicas com os resultados exatos da dissertação\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}}, analisando tempo e eficiência de cada um. 
+
+
 
 %Para (\textbf{1}), pensamos em utilizar a técnica \textbf{rejection sampling} para criar árvores geradoras viáveis a partir de árvores geradoras aleatórias melhorarando sua qualidade com uma busca local.\\
 
@@ -168,7 +182,6 @@ Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um g
 %	\item Cada estado da cadeia de Markov será uma solução inviável (custo maior que o requisitado) de menor diâmetro possível. O cálculo do menor diâmetro possível em uma árvore geradora é um problema \textit{fácil de resolver}, pois se assemelha ao \textit{1-center problem} \cite{Hassin1995}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu custo total, onde priorizaremos minimizar o custo e tornar o problema viável.
 %\end{itemize}  
 
-Para finalizar, pretendemos fazer uma comparação dessas técnicas com os resultados exatos, analisando tempo e eficiência de cada um. 
 
 
 %Figure and table captions should be centered if less than one line
