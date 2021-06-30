@@ -5,19 +5,6 @@ import random
 import operator
 import matplotlib.pyplot as plt
 
-path = 'D:\mndzvd\Documentos\GitHub\project_mcmc\instances\c_v6_a15_d4.txt'
-
-
-n, C = readFiles(path)
-G = create_graph(n, C)
-
-# print(G.number_of_nodes())
-# print(G.number_of_edges())
-
-T = nx.bfs_tree(G, 0, reverse=False, depth_limit=None, sort_neighbors=None)
-T = T.to_undirected()
-
-
 def transition_neighbor(graph):
 #     '''
 #     Cria um novo grafo a partir da adição de uma aresta de G-T e a remoção de uma aresta do ciclo. 
@@ -52,7 +39,19 @@ def f(graph):
     e = nx.eccentricity(graph)
     return e[max(e, key=e.get)]
 
-# s_t = transition_neighbor(T)
+# path = 'C:\\Users\\Wanderson\\OneDrive\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt'
+# n, C = readFiles(path)
+# G = create_graph(n, C)
+
+# b_tree = nx.bfs_tree(G, 0, reverse=False, depth_limit=None, sort_neighbors=None)
+# b_tree = b_tree.to_undirected()
+# diameter = f(b_tree)
+# print(diameter)
+# nx.draw(b_tree, with_labels=True, font_weight='bold')
+# plt.show()
+
+
+# s_t = transition_neighbor(b_tree)
 # nx.draw(s_t, with_labels=True, font_weight='bold')
 # plt.show()
 # diameter = f(s_t)
