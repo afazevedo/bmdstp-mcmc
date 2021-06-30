@@ -7,7 +7,7 @@ import operator
 import matplotlib.pyplot as plt
 
 
-def SA(eps, alpha, SAmax, T_initial, s):
+def SA(G, eps, alpha, SAmax, T_initial, s):
     solucao_otima = f(s)
     iterT = 0 
     T = T_initial
@@ -16,7 +16,7 @@ def SA(eps, alpha, SAmax, T_initial, s):
         while iterT < SAmax:
             iterT = iterT + 1
             sol_atual = f(s)
-            s_t = transition_neighbor(s)
+            s_t = transition_neighbor(G, s)
             sol_vizinho = f(s_t) 
             # print("Solução atual: ", sol_atual, "Solução do vizinho: ", sol_vizinho)
             delta = sol_vizinho - sol_atual
@@ -45,21 +45,55 @@ G = create_graph(n, C)
 b_tree = nx.dfs_tree(G, 0)
 b_tree = b_tree.to_undirected()
 
-# nx.draw(b_tree, with_labels=True, font_weight='bold')
-# plt.show()
+
 
 # Precisão da temperatura final, taxa de resfriamento, 
 # número maximo de iterações por temperatura, temperatura inicial, solução inicial
 
-graph, sol = SA(0.001, 0.8, 10, 100, b_tree)
-nx.draw(graph, with_labels=True, font_weight='bold')
+#TODO
+
+x = {
+    0 : "RS", 
+    1 : "SC",
+    2 : "PR",
+    3 : "MS",
+    4 : "SP", 
+    5 : "RJ", 
+    6 : "ES", 
+    7 : "MG", 
+    8 : "GO", 
+    9 : "MT",
+    10 : "RO",
+    11 : "AC",
+    12 : "AM",
+    13 : "RR", 
+    14 : "PA", 
+    15 : "AP", 
+    16 : "TO", 
+    17 : "BA", 
+    18 : "MA", 
+    19 : "PI", 
+    20 : "CE", 
+    21 : "RN", 
+    22 : "PB", 
+    23 : "AL", 
+    24 : "SE", 
+    25 : "PE"
+    }
+
+print(x)
+graph, sol = SA(G, 0.001, 0.8, 10, 100, b_tree)
+
+pos = nx.spring_layout(graph)
+nx.draw(graph, pos, font_weight='bold')
+nx.draw_networkx_labels(graph, pos, labels=x)
 plt.show()
-print(f(graph), sol)
 
 
-
+# nx.draw(graph, with_labels=True, font_weight='bold')
+# plt.show()
+# print(f(graph), sol)
 # s = b_tree
-
 # iterT = 0 
 # T_initial = 1000
 # T = T_initial
