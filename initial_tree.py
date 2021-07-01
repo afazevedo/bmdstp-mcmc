@@ -1,51 +1,82 @@
-def escolha(node): #escolhe um vizinho aleatoriamente
-  vizinhos = list(G.neighbors(node))
-  escolhe = np.random.choice(vizinhos)
-
-  return escolhe
-
-def verifica(nodes, path):
-  check =  all(item in path for item in nodes)
- 
-  return check
+from cadeia_base import *
+from readFiles import *
+import networkx as nx
+import numpy as np 
+import random
+import operator
+import matplotlib.pyplot as plt
 
 
-def random_walk(v_inicial):
-  visitado = np.zeros(nx.number_of_nodes(G))
-  is_visited = np.zeros(nx.number_of_nodes(G))
-  caminho = [v_inicial]
-  is_visited[v_inicial] = 1
-  aux2 = v_inicial
-  nodes = np.array(G.nodes())
-  escolhe = escolha(aux2)
-  visitado[v_inicial] = escolhe
-  visitado[escolhe] = v_inicial
-  is_visited[escolhe] = 1
+def random_walk(G):
+  '''
+    Criação do passeio aleatório
+    :params: G - grafo original
+  '''
+  n = nx.number_of_nodes(G)
+  
+  # Vértice inicial escolhido ao acaso
+  first_node = random.randint(0, n-1)
+  
+  # Controle dos vértices visitados
+  is_visited = np.zeros(n, dtype=bool)
+  
+  # Criação do mapeamento da primeira visita a cada vértice
+  first_visit = np.zeros(n, dtype=int)
+  
+  # Nó inicial foi visitado
+  is_visited[first_node] = True
+  
+  # Escolhe um vizinho aleatoriamente
+  neighbor = np.random.choice(list(G.neighbors(first_node)))
+  is_visited[neighbor] = 1
+
+  # Amarração entre o nó inicial e seu vizinho
+  first_visit[first_node] = neighbor
+  first_visit[neighbor] = first_node
+  
+  cont = 2
   while True:
-    escolhe = escolha(aux2) #escolhe aleatoriamente o vizinho
-    if is_visited[escolhe] < 1.0:
-      visitado[escolhe] = caminho[len(caminho) - 1]
-    is_visited[escolhe] = 1
-    caminho.append(escolhe)
-    if verifica(nodes, caminho) == True:
-      break
-    aux2 = escolhe
+    # Guardar o último nó visitado
+    last_node = neighbor
     
-  return caminho, visitado
+    # Escolher aleatoriamente um vizinho
+    neighbor_edge = np.random.choice(list(G.neighbors(neighbor)))
+    
+    if not is_visited[neighbor_edge]:
+      first_visit[neighbor_edge] = last_node
+      is_visited[neighbor_edge] = 1
+      cont = cont + 1
+    
+    # Se visitou todos os nós, para
+    if cont == n:
+      break  
+    
+    neighbor = neighbor_edge
+    
+  return first_visit, first_node
 
 
 
 def generate_random_tree(G):
-  x = random.randint(0,nx.number_of_nodes(G) -1)
-  print(x)
-  path, visitado = random_walk(x)
-  print(path)
-  print(visitado)
-  H = nx.Graph()
-  for i in range(len(visitado)):
-    H.add_edge(visitado[i],i)
+  # Executa o passeio aleatório
+  first_visit, first_node = random_walk(G)
+  
+  # Inicializar a árvore aleatória
+  random_tree = nx.Graph()
+  
+  # Preencher com (j,i) para todo i != first_node
+  for i in range(len(first_visit)):
+    if i != first_node:
+      random_tree.add_edge(first_visit[i], i)
 
-  return H
+  return random_tree
+
+
+G = nx.complete_graph(10)
+H = generate_random_tree(G)
+
+nx.draw(H, with_labels = True)
+plt.show()
   
 
 
