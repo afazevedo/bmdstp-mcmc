@@ -36,9 +36,6 @@ def transition_neighbor(G, graph):
     
     return graph
 
-def f(graph):
-    e = nx.eccentricity(graph)
-    return e[max(e, key=e.get)]
 
 # path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt'
 

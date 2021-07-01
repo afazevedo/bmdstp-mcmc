@@ -2,8 +2,6 @@ import networkx as nx
 import numpy as np 
 import matplotlib.pyplot as plt
 
-# path = 'D:\mndzvd\Documentos\GitHub\project_mcmc\instances\c_v6_a15_d4.txt'
-
 def readFiles(path):
     cont = 0
     with open(path, 'r') as arq:
@@ -21,13 +19,6 @@ def readFiles(path):
             cont = cont + 1 
     return n, C
 
-
-# def readFiles(path):
-# C = np.loadtxt(path)
-# n = len(C)
-    # return n, C
-
-
 def create_graph(n,C):
     G = nx.Graph()
 
@@ -35,7 +26,35 @@ def create_graph(n,C):
         G.add_node(i)
         for j in range(n):
             G.add_node(j)
-            if C[i][j] > 0.00001:
-                G.add_edge(i, j)
+            if C[i,j] > 0.00001:
+                G.add_edge(i, j, weight=C[i,j])
     return G
 
+x = {
+    0 : "RS", 
+    1 : "SC",
+    2 : "PR",
+    3 : "MS",
+    4 : "SP", 
+    5 : "RJ", 
+    6 : "ES", 
+    7 : "MG", 
+    8 : "GO", 
+    9 : "MT",
+    10 : "RO",
+    11 : "AC",
+    12 : "AM",
+    13 : "RR", 
+    14 : "PA", 
+    15 : "AP", 
+    16 : "TO", 
+    17 : "BA", 
+    18 : "MA", 
+    19 : "PI", 
+    20 : "CE", 
+    21 : "RN", 
+    22 : "PB", 
+    23 : "AL", 
+    24 : "SE", 
+    25 : "PE"
+    }

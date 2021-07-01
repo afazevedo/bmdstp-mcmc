@@ -1,5 +1,7 @@
 from cadeia_base import *
 from readFiles import *
+from important_functions import *
+from initial_tree import *
 import networkx as nx
 import numpy as np 
 import random
@@ -7,25 +9,41 @@ import operator
 import matplotlib.pyplot as plt
 
 
-def SA(G, eps, alpha, SAmax, T_initial, s):
+def SA(G, eps, alpha, SAmax, T_initial, s, B, C):
+    """
+    Algoritmo para calcular o metaheurística Simulated Annealing.
+
+    Args:
+        G (nx.Graph): Grafo G original não direcionado.
+        eps (Float): Precisão do critério de parada para temperatura.
+        alpha (Float): Taxa de resfriamento.
+        SAmax (Int): Número de iterações máximas para cada temperatura.
+        T_initial (Float): Temperatura inicial.
+        s (nx.Graph): Solução inicial (Árvore Geradora).
+
+    Returns:
+        best_solution (nx.Graph): Melhor árvore encontrada.
+        sol_otima (Int): Melhor diâmetro encontrado.
+    """
     solucao_otima = f(s)
     iterT = 0 
     T = T_initial
     best_solution = nx.Graph.copy(s)
+    best_cost = check_cost(s, C)
     while T > eps:
         while iterT < SAmax:
             iterT = iterT + 1
             sol_atual = f(s)
             s_t = transition_neighbor(G, s)
-            sol_vizinho = f(s_t) 
-            # print("Solução atual: ", sol_atual, "Solução do vizinho: ", sol_vizinho)
+            sol_vizinho =  f(s_t)
+            cost_vizinho = check_cost(s_t, C)
             delta = sol_vizinho - sol_atual
-            if delta < 0:
+            if delta < 0 or cost_vizinho <= B:
                 s = s_t 
-                if sol_vizinho < solucao_otima:
-                    # print("Entra aqui?")
+                if sol_vizinho < solucao_otima and cost_vizinho <= best_cost:
                     best_solution = nx.Graph.copy(s_t)
                     solucao_otima = sol_vizinho 
+                    best_cost = cost_vizinho
             else:
                 x = np.random.uniform(0, 1)
                 boltzmann = np.exp(((-1)*delta)/T)
@@ -37,91 +55,26 @@ def SA(G, eps, alpha, SAmax, T_initial, s):
     return best_solution, solucao_otima  
 
 # Leitura do grafo
-path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt'
+path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\c_v10_a45_d4.txt'
 n, C = readFiles(path)
 G = create_graph(n, C)
+B = generate_B(G, C, 0.30)
+
 
 # Solução inicial
-b_tree = nx.dfs_tree(G, 0)
-b_tree = b_tree.to_undirected()
+b_tree = generate_random_tree(G)
+b_tree = mst(G, C)
+# b_tree = nx.dfs_tree(G, 0)
+# b_tree = b_tree.to_undirected()
 
-
-
-# Precisão da temperatura final, taxa de resfriamento, 
-# número maximo de iterações por temperatura, temperatura inicial, solução inicial
-
-#TODO
-
-x = {
-    0 : "RS", 
-    1 : "SC",
-    2 : "PR",
-    3 : "MS",
-    4 : "SP", 
-    5 : "RJ", 
-    6 : "ES", 
-    7 : "MG", 
-    8 : "GO", 
-    9 : "MT",
-    10 : "RO",
-    11 : "AC",
-    12 : "AM",
-    13 : "RR", 
-    14 : "PA", 
-    15 : "AP", 
-    16 : "TO", 
-    17 : "BA", 
-    18 : "MA", 
-    19 : "PI", 
-    20 : "CE", 
-    21 : "RN", 
-    22 : "PB", 
-    23 : "AL", 
-    24 : "SE", 
-    25 : "PE"
-    }
-
-print(x)
-graph, sol = SA(G, 0.001, 0.8, 10, 100, b_tree)
-
-pos = nx.spring_layout(graph)
-nx.draw(graph, pos, font_weight='bold')
-nx.draw_networkx_labels(graph, pos, labels=x)
+nx.draw(b_tree, with_labels=True)
 plt.show()
 
 
-# nx.draw(graph, with_labels=True, font_weight='bold')
+# Simulated Annealing
+graph, sol = SA(G, 0.00001, 0.98, 100, 100, b_tree, B, C)
+print("Custo total: ", check_cost(graph, C), "Budget: ", B, "Diametro:", f(graph))
+# pos = nx.spring_layout(b_tree)
+# nx.draw(b_tree, pos, font_weight='bold')
+# nx.draw_networkx_labels(b_tree, pos, labels=x)
 # plt.show()
-# print(f(graph), sol)
-# s = b_tree
-# iterT = 0 
-# T_initial = 1000
-# T = T_initial
-# for i in range(10):
-#     s_t = 0
-#     aux = f(s)
-#     #print('f(st) antes de transitar ', f(s_t))
-#     print('O valor de f(s) é: ', aux)
-#     s_t = transition_neighbor(s)
-#     print('f(st) após transitar ', f(s_t), 'f(s): ', aux)
-#     delta = f(s_t) - aux
-#     print(delta)
-#     # if delta != 0:
-#     #     print('é diferente')
-#     #print("f(st): ",f(s_t), "f(s): ", f(s))     
-#     if delta <= 0:
-#         s = s_t 
-#         #print('f(s_t): ', f(s_t), 'best_solution: ', f(best_solution))
-#         if f(s_t) < solucao_otima:
-#             best_solution = s_t
-#             solucao_otima = f(s_t) 
-#     else:
-#         #print('delta: ',delta, "T: ", T)
-#         x = np.random.uniform(0,1)
-#         print('x: ', x)
-#         boltzmann = np.exp(((-1)*delta)/T)
-#         print('boltzmann: ', boltzmann,"\n")
-#         if x < boltzmann:
-#             s = s_t
-#             print('aceitou')
-# print('solução ótima: ', solucao_otima)

@@ -1,5 +1,3 @@
-from cadeia_base import *
-from readFiles import *
 import networkx as nx
 import numpy as np 
 import random
@@ -55,8 +53,6 @@ def random_walk(G):
     
   return first_visit, first_node
 
-
-
 def generate_random_tree(G):
   # Executa o passeio aleatório
   first_visit, first_node = random_walk(G)
@@ -72,11 +68,11 @@ def generate_random_tree(G):
   return random_tree
 
 
-G = nx.complete_graph(10)
-H = generate_random_tree(G)
+# G = nx.complete_graph(10)
+# H = generate_random_tree(G)
 
-nx.draw(H, with_labels = True)
-plt.show()
+# nx.draw(H, with_labels = True)
+# plt.show()
   
 
 
