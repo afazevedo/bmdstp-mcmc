@@ -9,7 +9,7 @@ import operator
 import matplotlib.pyplot as plt
 
 
-def SA(G, eps, alpha, SAmax, T_initial, s, B, C):
+def SA(G, eps, alpha, SAmax, T_initial, s, B, C, original_cost):
     """
     Algoritmo para calcular o metaheurística Simulated Annealing.
 
@@ -25,25 +25,35 @@ def SA(G, eps, alpha, SAmax, T_initial, s, B, C):
         best_solution (nx.Graph): Melhor árvore encontrada.
         sol_otima (Int): Melhor diâmetro encontrado.
     """
-    solucao_otima = f(s)
+    solucao_otima = g(s, C)
     iterT = 0 
     T = T_initial
     best_solution = nx.Graph.copy(s)
-    best_cost = check_cost(s, C)
+    # best_cost = g(s, C)
     while T > eps:
         while iterT < SAmax:
             iterT = iterT + 1
-            sol_atual = f(s)
+            
+            sol_atual = g(s, C)
+            diam_atual = f(s)
             s_t = transition_neighbor(G, s)
-            sol_vizinho =  f(s_t)
-            cost_vizinho = check_cost(s_t, C)
+            sol_vizinho =  g(s_t, C)
+            diam_vizinho = f(s_t)
+            
             delta = sol_vizinho - sol_atual
-            if delta < 0 or cost_vizinho <= B:
+            # print("Solução atual: ", sol_atual, "Solução do vizinho: ", sol_vizinho)
+            # if diam_vizinho > diam_atual:
+            #     C[nonedge[0],nonedge[1]] = 1.1*C[nonedge[0],nonedge[1]]
+                
+            if delta < 0 and sol_vizinho <= B:   
                 s = s_t 
-                if sol_vizinho < solucao_otima and cost_vizinho <= best_cost:
+                # print(sol_vizinho)
+                # if diam_vizinho < solucao_otima:
+                #     best_solution = nx.Graph.copy(s_t)
+                #     solucao_otima = diam_vizinho
+                if diam_vizinho < diam_atual:
                     best_solution = nx.Graph.copy(s_t)
-                    solucao_otima = sol_vizinho 
-                    best_cost = cost_vizinho
+                    solucao_otima = sol_vizinho
             else:
                 x = np.random.uniform(0, 1)
                 boltzmann = np.exp(((-1)*delta)/T)
@@ -51,29 +61,31 @@ def SA(G, eps, alpha, SAmax, T_initial, s, B, C):
                     s = s_t
         T = T*alpha
         iterT = 0  
-    print("Solução ótima", solucao_otima)
     return best_solution, solucao_otima  
 
 # Leitura do grafo
 path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\c_v10_a45_d4.txt'
 n, C = readFiles(path)
+original_cost = np.copy(C)
 G = create_graph(n, C)
 B = generate_B(G, C, 0.30)
-
+# B = 12733
 
 # Solução inicial
 b_tree = generate_random_tree(G)
-b_tree = mst(G, C)
-# b_tree = nx.dfs_tree(G, 0)
+# b_tree = mst(G, C)
+# b_tree = nx.bfs_tree(G, 0)
 # b_tree = b_tree.to_undirected()
 
-nx.draw(b_tree, with_labels=True)
-plt.show()
+# nx.draw(b_tree, with_labels=True)
+# plt.show()
 
 
 # Simulated Annealing
-graph, sol = SA(G, 0.00001, 0.98, 100, 100, b_tree, B, C)
-print("Custo total: ", check_cost(graph, C), "Budget: ", B, "Diametro:", f(graph))
+graph, sol = SA(G, 0.001, 0.5, 1000, 10, b_tree, B, C, original_cost)
+print("Custo total: ", check_cost(graph, original_cost), "Budget: ", B, "Diametro:", f(graph))
+nx.draw(graph, with_labels=True)
+plt.show()
 # pos = nx.spring_layout(b_tree)
 # nx.draw(b_tree, pos, font_weight='bold')
 # nx.draw_networkx_labels(b_tree, pos, labels=x)

@@ -14,15 +14,11 @@ def check_cost(G, C):
     Returns:
         total_cost [Float]: [Custo total da árvore]
     """
-    n = nx.number_of_nodes(G)
-    
     total_cost = 0
-    for i in range(n):
-        for j in range(n):
-            if nx.Graph.has_edge(G, i, j):
-                total_cost += C[i,j]
+    for i,j in G.edges():
+        total_cost += C[i,j]
 
-    return total_cost/2
+    return total_cost
     
 def generate_B(G, C, percent):
     budget = 0
@@ -53,4 +49,5 @@ def mst(graph, C):
         nx.Graph.add_edge(b_tree, i[0], i[1])
         
     return b_tree
+        
         

@@ -1,4 +1,5 @@
 from readFiles import *
+from initial_tree import *
 import networkx as nx
 import numpy as np 
 import random
@@ -36,24 +37,47 @@ def transition_neighbor(G, graph):
     
     return graph
 
+def transition_neighbor_e(G, span_tree):
+    edgesOriginal = list(G.edges)
+    edgesTree = list(span_tree.edges)
+    in_tree = False
 
-# path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt'
+    e = random.choice([x for x in edgesOriginal])
+    f = random.choice([x for x in edgesTree])
+    
+    # print("A aresta escolhida para sair é: ", f[0], ",", f[1], "\n")
+    # print("A aresta escolhida para entrar é: ", e[0], ",", e[1], "\n")
+    
+    if nx.Graph.has_edge(span_tree, e[0], e[1]):
+        span_tree.remove_edge(f[0], f[1])
+        in_tree = True
+    else:
+        span_tree.add_edge(e[0], e[1])
 
-# n, C = readFiles(path)
-# G = create_graph(n, C)
+    if not nx.algorithms.tree.recognition.is_tree(span_tree):
+        span_tree.add_edge(f[0], f[1])
+        if not in_tree:
+            span_tree.remove_edge(e[0], e[1])
+    
+    return span_tree
+
+
+path = 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt'
+
+n, C = readFiles(path)
+G = create_graph(n, C)
 
 # b_tree = nx.bfs_tree(G, 0, reverse=False, depth_limit=None, sort_neighbors=None)
 # b_tree = b_tree.to_undirected()
-
-# s_t = transition_neighbor(G, b_tree)
-
-# diameter = f(b_tree)
-# print(diameter)
+# b_tree = generate_random_tree(G)
 # nx.draw(b_tree, with_labels=True, font_weight='bold')
 # plt.show()
-
-
-# nx.draw(s_t, with_labels=True, font_weight='bold')
+# s_t = transition_neighbor_e(G, b_tree)
+# nx.draw(s_t, with_labels=True)
 # plt.show()
+# print(s_t)
+# diameter = f(b_tree)
+# print(diameter)
+
 # diameter = f(s_t)
 # print(diameter)
