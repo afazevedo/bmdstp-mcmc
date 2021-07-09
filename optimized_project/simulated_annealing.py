@@ -5,7 +5,6 @@ import math
 import random
 from nodes_generator import NodeGenerator
 from animated_visualizer import *
-from grid import PointGenerator
 
 class SimulatedAnnealing:
     def __init__(self, original_graph, temp, alpha, stopping_temp, stopping_iter, matrix_cost):

@@ -1,7 +1,6 @@
 from nodes_generator import NodeGenerator
 from simulated_annealing import SimulatedAnnealing
 from read_files import *
-from grid import PointGenerator
 
 def main():
     '''set the simulated annealing algorithm params'''
