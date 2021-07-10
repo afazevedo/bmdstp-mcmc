@@ -25,7 +25,8 @@ def animateTSP(history):
 
     def init():
         ''' initialize node dots on graph '''
-        x = np.arange(0, len(history)-1)
+        aux = np.arange(0, len(history)-1)
+        x = aux[::-1] 
         y = [history[i] for i in range(len(history)-1)]
         plt.plot(x, y, 'co')
 
