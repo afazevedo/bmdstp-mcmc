@@ -67,8 +67,6 @@ def generate_random_tree(G):
 
     return random_tree
 
-  
-
 
 
 def mst(graph, C):
