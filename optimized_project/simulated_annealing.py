@@ -4,20 +4,19 @@ import numpy as np
 import math
 import random
 from nodes_generator import NodeGenerator
-from animated_visualizer import *
 import matplotlib.pyplot as plt
+import time
 
 
 
 class SimulatedAnnealing:
-    def __init__(self, original_graph, temp, alpha, stopping_temp, stopping_iter, matrix_cost, B):
-        ''' animate the solution over time
-
+    def __init__(self, original_graph, initial_temp, alpha, stopping_temp, stopping_iter, matrix_cost, B):
+        ''' 
             Parameters
             ----------
-            coords: array_like
-                list of coordinates
-            temp: float
+            original_graph: nx.graph
+                original graph G
+            initial_temp: float
                 initial temperature
             alpha: float
                 rate at which temp decreases
@@ -25,41 +24,52 @@ class SimulatedAnnealing:
                 temperature at which annealing process terminates
             stopping_iter: int
                 interation at which annealing process terminates
-
+            matrix_cost: array like
+                original cost from G
+            B: float
+                budget from source data
         '''
         
-        self.temp = temp
-        self.initial_temp = temp
-        self.alpha = alpha
+        # set simulated annealing parameters
+        self.temp = initial_temp # set temperature to initial temperature
+        self.initial_temp = initial_temp
+        self.alpha = alpha 
         self.stopping_temp = stopping_temp
         self.stopping_iter = stopping_iter
-
+        self.penalty = 4 # set penalty 
+        
+        # set initial parameters
         self.iteration = 1
         self.original_graph = original_graph
         self.dist_matrix = matrix_cost
         self.budget = B
-        
         self.curr_solution = generate_random_tree(self.original_graph)
-        # self.curr_solution = mst(self.original_graph, self.dist_matrix)
         self.best_solution = nx.Graph.copy(self.curr_solution)
         
+        # set initial weight parameters
         self.curr_weight = self.weight(self.curr_solution)
-        self.initial_weight = self.curr_weight
-        self.min_weight = self.curr_weight
+        aux_weight = self.curr_weight
+        self.initial_weight = aux_weight
+        self.min_weight = aux_weight
 
+        # set initial diameter parameters
         self.curr_diameter = self.calculate_diameter(self.curr_solution)
-        self.initial_diameter = self.curr_diameter
-        self.min_diameter = self.curr_diameter
+        aux_diameter = self.curr_diameter
+        self.initial_diameter = aux_diameter
+        self.min_diameter = aux_diameter
 
-        self.weight_list = [self.curr_weight]
-        self.diameter_list = [self.curr_diameter]
-        self.solution_history = [self.temp]
+        # set initial list parameters
+        self.weight_list = [aux_weight]
+        self.diameter_list = [aux_diameter]
+        self.solution_history = [initial_temp]
+        self.best_solution_history_diameter = []
+        self.best_solution_history_weight = []
         
-        print('==============(LOG)==================')
-        print('Initial weight: ', self.curr_weight)
-        print('Initial diameter: ', self.curr_diameter)
-
-        
+        # print initial log
+        print('===================================')
+        print('Initial weight: ', aux_weight)
+        print('Initial diameter: ', aux_diameter)
+            
     def weight(self, candidate):
         '''
         Calculate weight
@@ -71,6 +81,9 @@ class SimulatedAnnealing:
         return total_cost
 
     def calculate_diameter(self, candidate):
+        '''
+        Calculate diameter
+        '''
         e = nx.eccentricity(candidate)
         return e[max(e, key=e.get)]
     
@@ -87,41 +100,57 @@ class SimulatedAnnealing:
         acceptance_probability()
         '''
         
+        # calculate the diameter and weight of the neighbor
         candidate_diameter = self.calculate_diameter(candidate)
         candidate_weight = self.weight(candidate)
-        penalty = 4
         
-        if self.curr_weight >= self.budget:
-            candidate_diameter += penalty
+        if candidate_weight > self.budget: # if the neighbor's weight is greater than the budget
+            candidate_diameter += self.penalty # we penalize the diameter of the neighbor
             
-            if candidate_diameter < self.curr_diameter:
-                candidate_diameter -= penalty
+            if candidate_diameter < self.curr_diameter: # if the neighbor's diameter is still smaller than the current diameter (even penalized)
+                # we accept!
+                candidate_diameter -= self.penalty # remove the penalty
+                
+                # update current solutions
                 self.curr_diameter = candidate_diameter
                 self.curr_weight = candidate_weight
-                self.curr_solution = candidate
-                
-                # if candidate_diameter < self.min_diameter:
-                #     self.min_diameter = self.curr_diameter
-                #     self.best_solution = self.curr_solution  
+                self.curr_solution = candidate 
             else:
-                candidate_diameter -= penalty
-                if random.random() < self.acceptance_probability(candidate_diameter):
+                # if not, we will accept according to boltzmann distribution
+                candidate_diameter -= self.penalty  # remove the penalty
+                unif = random.random() # generate a uniform number between 0 and 1
+                if unif < self.acceptance_probability(candidate_diameter):
+                    # update current solutions
                     self.curr_diameter = candidate_diameter
                     self.curr_weight = candidate_weight
                     self.curr_solution = candidate
-        else:
+        else: 
+            # if it is a viable solution
+            # if the diameter of the neighbor is smaller or equal but with a smaller weight, we accept    
             if candidate_diameter < self.curr_diameter or (candidate_diameter == self.curr_diameter and candidate_weight < self.curr_weight):
+                # update current solutions
                 self.curr_diameter = candidate_diameter
                 self.curr_weight = candidate_weight
                 self.curr_solution = candidate
                 
-                # if candidate_weight < self.min_weight:
-                #     self.min_weight = self.curr_weight
-                # if candidate_diameter <= self.min_diameter:
-                #     self.min_diameter = self.curr_diameter
-                #     self.best_solution = self.curr_solution
+                # updates the best solution
+                current = nx.Graph.copy(self.curr_solution)
+                self.best_solution = current
+                self.best_solution_history_diameter.append(self.calculate_diameter(current))
+                self.best_solution_history_weight.append(self.weight(current))
             else:
-                if random.random() < self.acceptance_probability(candidate_diameter):
+                # if not, we will accept according to boltzmann distribution
+                unif = random.random() # generate a uniform number between 0 and 1
+                if unif < self.acceptance_probability(candidate_diameter):
+                    
+                    # updates the best solution
+                    if candidate_diameter <= self.calculate_diameter(self.best_solution):
+                        current = nx.Graph.copy(self.curr_solution)
+                        self.best_solution = current
+                        self.best_solution_history_diameter.append(self.calculate_diameter(current))
+                        self.best_solution_history_weight.append(self.weight(current))
+                    
+                    # update current solutions
                     self.curr_diameter = candidate_diameter
                     self.curr_weight = candidate_weight
                     self.curr_solution = candidate
@@ -130,74 +159,91 @@ class SimulatedAnnealing:
         '''
         Annealing process 
         '''
+        # as long as the temperature is greater than zero and the number of iterations is less than the maximum number of iterations
         while self.temp >= self.stopping_temp and self.iteration < self.stopping_iter:
+            
+            # we generate a new neighbor
             candidate = NodeGenerator(self.original_graph, self.curr_solution).generate()
             
+            # we check whether we transitioned or not
             self.accept(candidate)
-            self.temp *= self.alpha
-            self.iteration += 1
             
+            # if the current diameter is greater than or equal to the best diameter found
             if self.calculate_diameter(self.curr_solution) <= self.calculate_diameter(self.best_solution):
+                # if the weight of the current solution is less than or equal to the budget (feasible solution)
                 if self.weight(self.curr_solution) <= self.budget:
+                    # updates the best solution
                     current = nx.Graph.copy(self.curr_solution)
                     self.best_solution = current
-                
-            # if self.weight(self.curr_solution) <= self.budget:
-            #     print("Solução atual: ", self.weight(self.curr_solution))
-            #     print("Diametro: ", self.calculate_diameter(self.curr_solution))
-            #     current = nx.Graph.copy(self.curr_solution)
-            #     if self.calculate_diameter(current) <= self.calculate_diameter(self.best_solution):
-            #         self.best_solution = current
-            #     else:
-            #         self.best_solution = current 
+                    self.best_solution_history_diameter.append(self.calculate_diameter(current))
+                    self.best_solution_history_weight.append(self.weight(current))
             
+            # if the current diameter is less than the smallest known diameter
             if self.calculate_diameter(self.curr_solution) < self.min_diameter:
+                # we keep it
                 self.min_diameter = self.calculate_diameter(self.curr_solution)
-    
+
+            # if the current weight is less than the smallest known weight
             if self.weight(self.curr_solution) < self.min_weight:
+                # we keep it
                 self.min_weight = self.weight(self.curr_solution)
         
+            # storing a history of solutions
             self.weight_list.append(self.curr_weight)
             self.diameter_list.append(self.curr_diameter)
             self.solution_history.append(self.temp)
 
+            # cooling
+            self.temp *= self.alpha
+            
+            # increase the iteration
+            self.iteration += 1
         
+    def print_solution(self, start_time):
         print('Minimum weight: ', self.min_weight, " ", 'Improvement: ',
-              round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')
+            round((self.initial_weight - self.min_weight) / (self.initial_weight), 4) * 100, '%')
         print('Minimum diameter: ', self.min_diameter, " ", 'Improvement: ',
-              round((self.initial_diameter - self.min_diameter) / (self.initial_diameter), 4) * 100, '%')
-        print('Tempo total(s): ')
-        # print('=====================================')
-        # print('Pesos: ', self.weight_list)
-        # print('Diametros: ', self.diameter_list)
+            round((self.initial_diameter - self.min_diameter) / (self.initial_diameter), 4) * 100, '%')
         print('=====================================')
-        print('Solução final:')
-        print('Diameter: ', self.calculate_diameter(self.best_solution), '\n')
-        print('Peso: ', self.weight(self.best_solution), '\n')
+        print('Final solution:')
+        print('Diameter: ', min(self.best_solution_history_diameter))
+        index_weight = self.best_solution_history_diameter.index(min(self.best_solution_history_diameter))
+        print('Weight: ', self.best_solution_history_weight[index_weight])
+        print('Iterations:', self.stopping_iter)
+        print("--- %s seconds ---" % (time.time() - start_time))
         print('=====================================')
-        # print(self.solution_history)
+
         # nx.draw(self.best_solution, with_labels=True)
         # plt.show()
 
-    
-    
-    
-    # def animateSolutions(self):        
-    #     animateTSP(self.solution_history)
-
     def plotLearning_diameter(self):
-        tam = len(self.solution_history)
+        number_iterations = len(self.solution_history)
 
         fig = plt.figure(figsize=(18, 8))
-        plt.plot([i for i in np.arange(len(self.diameter_list), 0)], self.diameter_list, color = 'blue')
+        x_axis = np.linspace(self.initial_temp, self.temp, number_iterations)
+        
+        plt.plot(x_axis, self.diameter_list, color = 'blue')
         
         line_init = plt.axhline(y = self.initial_diameter, color='r', linestyle='--')
         line_min = plt.axhline(y = min(self.diameter_list), color='g', linestyle='--')
-        
-        # print(self.solution_history)
         plt.xlim(self.initial_temp, self.temp)
-        # plt.ylim(min(self.solution_history)-1, max(self.solution_history)+1)
         
+        plt.legend([line_init, line_min], ['Initial Diameter', 'Optimized Diameter'])
+        plt.ylabel('Diameter')
+        plt.xlabel('Temperature')
+        plt.show()
+    
+    def plotLearning_best_solution_diameter(self):
+        number_iterations = len(self.best_solution_history_diameter)
+        
+        fig = plt.figure(figsize=(18, 8))
+        x_axis = np.linspace(self.initial_temp, self.temp, number_iterations)
+        
+        plt.plot(x_axis, self.best_solution_history_diameter, color = 'blue')
+        
+        line_init = plt.axhline(y = self.initial_diameter, color='r', linestyle='--')
+        line_min = plt.axhline(y = min(self.best_solution_history_diameter), color='g', linestyle='--')
+        plt.xlim(self.initial_temp, self.temp)
         
         plt.legend([line_init, line_min], ['Initial Diameter', 'Optimized Diameter'])
         plt.ylabel('Diameter')
@@ -205,18 +251,15 @@ class SimulatedAnnealing:
         plt.show()
         
     def plotLearning_weight(self):
-        tam = len(self.solution_history)
+        number_iterations = len(self.solution_history)
 
         fig = plt.figure(figsize=(18, 8))
-        plt.plot([i for i in np.linspace(tam, 0, len(self.weight_list))], self.weight_list, color = 'purple')
+        x_axis = np.linspace(self.initial_temp, self.temp, number_iterations)
+        plt.plot(x_axis, self.weight_list, color = 'blue')
 
         line_init = plt.axhline(y = self.initial_weight, color='r', linestyle='--')
         line_min = plt.axhline(y = min(self.weight_list), color='g', linestyle='--')
-        
-        # print(self.solution_history)
         plt.xlim(self.initial_temp, self.temp)
-        # plt.ylim(min(self.solution_history)-1, max(self.solution_history)+1)
-        
         
         plt.legend([line_init, line_min], ['Initial Cost', 'Optimized Cost'])
         plt.ylabel('Cost')

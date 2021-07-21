@@ -30,6 +30,19 @@ def create_graph(n,C):
                 G.add_edge(i, j, weight=C[i,j])
     return G
 
+def generate_B(G, C, percent):
+    budget = 0
+    
+    sorted_C = np.sort(C, axis=None)  
+    reverse_C = sorted_C[::-1]
+    
+    n = nx.number_of_nodes(G)
+    
+    for i in range(n-1):
+        budget += reverse_C[i]
+    
+    return percent*budget   
+
 x = {
     0 : "RS", 
     1 : "SC",
@@ -58,17 +71,3 @@ x = {
     24 : "SE", 
     25 : "PE"
     }
-
-
-def generate_B(G, C, percent):
-    budget = 0
-    
-    sorted_C = np.sort(C, axis=None)  
-    reverse_C = sorted_C[::-1]
-    
-    n = nx.number_of_nodes(G)
-    
-    for i in range(n-1):
-        budget += reverse_C[i]
-    
-    return percent*budget   
