@@ -2,22 +2,38 @@ import networkx as nx
 import numpy as np 
 import matplotlib.pyplot as plt
 
-def readFiles(path):
+def readFiles(path, fst):
     cont = 0
     with open(path, 'r') as arq:
-        for line in arq:
-            line = line.strip()
-            line = line.split()
-            if cont == 0:
-                n = int(line[0])
-                C = np.zeros((n, n))
-            else:
-                i = int(line[0])
-                j = int(line[1])
-                C[i,j] = int(line[2])
-                C[j,i] = C[i,j]
-            cont = cont + 1 
-    return n, C
+        if fst:
+            for line in arq:
+                line = line.strip()
+                line = line.split()
+                if cont == 0:
+                    n = int(line[0])
+                    m = int(line[1])
+                    C = np.zeros((n, n))
+                else:
+                    i = int(line[0])
+                    j = int(line[1])
+                    C[i-1,j-1] = int(line[2])
+                    C[j-1,i-1] = C[i-1,j-1]
+                cont = cont + 1 
+        else:
+            for line in arq:
+                line = line.strip()
+                line = line.split()
+                if cont == 0:
+                    n = int(line[0])
+                    m = int(line[1])
+                    C = np.zeros((n, n))
+                else:
+                    i = int(line[0])
+                    j = int(line[1])
+                    C[i,j] = int(line[2])
+                    C[j,i] = C[i,j]
+                cont = cont + 1 
+    return n, m, C
 
 def create_graph(n,C):
     G = nx.Graph()
