@@ -5,7 +5,6 @@ import random
 
 class NodeGenerator:
     
-    
     def __init__(self, original_graph, spanning_tree):
         self.original_graph = original_graph
         self.spanning_tree = spanning_tree
