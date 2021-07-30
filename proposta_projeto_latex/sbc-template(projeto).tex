@@ -1,0 +1,213 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{tikz} %Ferramenta mais complexa e poderosa para criar elementos gráficos
+\usetikzlibrary{calc}
+\usepackage{tkz-fct,tkz-euclide,tkz-base,tikz}
+\tikzset{bolinha/.style={circle, draw, fill=none,
+		inner sep=1pt, minimum width=1pt}}
+\tikzset{bola/.append style={circle, draw, fill=none,
+		inner sep=2pt, minimum width=1pt, fill=gray!50}}
+
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{hhline}
+\usepackage{array}
+\usepackage{color}
+\usepackage{outlines}
+
+\tikzset{
+	square/.style={%
+		draw=none,
+		circle,
+		append after command={%
+			\pgfextra \draw[black] (\tikzlastnode.north-|\tikzlastnode.west) rectangle 
+			(\tikzlastnode.south-|\tikzlastnode.east);\endpgfextra}
+	}
+}
+
+%Interface para algoritmos%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=blue,      
+	urlcolor=blue,
+	citecolor=black,
+	% pdftitle={Overleaf Example},
+	% pdfpagemode=FullScreen,
+}
+     
+%\sloppy
+
+
+\title{Proposta de projeto: Monte Carlo e Cadeias de Markov}
+
+\author{Amanda Ferreira de Azevedo\inst{1}, Wanderson Douglas Lomenha Pereira\inst{1}}
+
+
+\address{
+	Universidade Federal do Rio de Janeiro\\
+	Instituto Alberto Luiz Coimbra de Pós-Graduação e Pesquisa em Engenharia\\
+	Programa de Engenharia de Sistemas e Computação
+	\email{\{afazevedo,wlomenha\}@cos.ufrj.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+%\begin{abstract}
+%  This meta-paper describes the style to be used in articles and short papers
+%  for SBC conferences. For papers in English, you should add just an abstract
+%  while for the papers in Portuguese, we also ask for an abstract in
+%  Portuguese (``resumo''). In both cases, abstracts should not have more than
+%  10 lines and must be in the first page of the paper.
+%\end{abstract}
+%     
+%\begin{resumo} 
+%  Este meta-artigo descreve o estilo a ser usado na confecção de artigos e
+%  resumos de artigos para publicação nos anais das conferências organizadas
+%  pela SBC. É solicitada a escrita de resumo e abstract apenas para os artigos
+%  escritos em português. Artigos em inglês deverão apresentar apenas abstract.
+%  Nos dois casos, o autor deve tomar cuidado para que o resumo (e o abstract)
+%  não ultrapassem 10 linhas cada, sendo que ambos devem estar na primeira
+%  página do artigo.
+%\end{resumo}
+
+\section{Definição do problema}
+
+
+Seja $G = (V, E)$ um grafo simples, conexo e não orientado, onde V é o conjunto de vértices e E é o conjunto de arestas. Associe um custo não-negativo $c_e$ à cada aresta $e = \{i,j\} \in E$. Denota-se por $d_{ij}$ ao comprimento do menor caminho simples ligando os vértices $i,j \in V$, ou seja, à \textit{distância} entre eles no grafo $G$. Por fim, o \textit{diâmetro} de $G$, $d$, é dado pela maior distância existente entre qualquer par de vértices de $G$, em termos de número de arestas. Além disso, seja \textit{B} um número positivo que impõe um limite superior para o quanto se pode gastar na escolha das arestas de uma árvore geradora $T = (V_T, E_T)$. Denomina-se por \textit{Budget Minimum Diameter Spanning Tree Problem} (BMDSTP) o problema de encontrar uma árvore geradora $T$ tal que a soma total do custo de suas arestas não ultrapasse $B$ e seu diâmetro seja o menor possível. O problema foi proposto por \cite{Plesnik1981}, sob uma denominação imprecisa onde foi identificado como NP-Difícil. Uma ilustração de uma árvore geradora ótima para o problema é dada na Figura \ref{fig2}. 
+
+\begin{figure}[ht]
+	\begin{center}
+		\begin{tikzpicture}
+			[scale=1.5,auto=left]   
+			\tikzstyle{every node}=[circle, draw, fill=white, inner sep=0pt, minimum width=17pt]
+			\node[fill=gray!50]  (a) at (0.5,2) {a};
+			\node[fill=gray!50]  (b) at (1,2.5) {b};
+			\node[fill=gray!50]  (c) at (2,2.5) {c};
+			\node[fill=gray!50]  (d) at (2.5,2) {d};
+			\node[fill=gray!50]  (e) at (2,1.5) {e};
+			\node[fill=gray!50]  (f) at (1,1.5) {f};
+			\node (bc) at (1.5, 2.62) [draw=none,fill=none, scale = 0.85] {$3$};
+			\node (cd) at (2.3, 2.35) [draw=none,fill=none, scale = 0.85] {$1$};
+			\node (de) at (2.3, 1.66) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (fe) at (1.5,1.37) [draw=none,fill=none, scale = 0.85] {$8$};
+			\node (af) at (0.67,1.65) [draw=none,fill=none, scale = 0.85] {$6$};
+			\node (ab) at (0.67,2.35) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (be) at (1.59,2.11) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (bf) at (1.1,2) [draw=none,fill=none, scale = 0.85] {$9$};
+			\node (ec) at (2.1,1.99) [draw=none,fill=none, scale = 0.85] {$2$};
+			
+			\draw[line width = 2] (a) -- (b);
+			\draw[line width = 2] (b) -- (c);
+			\draw[line width = 2] (c) -- (d);
+			\draw[] (d) -- (e);
+			\draw[] (f) -- (e);
+			\draw[line width = 2] (a) -- (f);
+			\draw[line width = 2] (e) -- (b);
+			\draw[] (b) -- (f);
+			\draw[] (c) -- (e);
+			
+			
+			
+			\node  (g) at (-0.5,2) {d};
+			\node  (h) at (-1,2.5) {c};
+			\node  (i) at (-2,2.5) {b};
+			\node  (j) at (-2.5,2) {a};
+			\node  (k) at (-2,1.5) {f};
+			\node  (l) at (-1,1.5) {e};
+			\node (ac1) at (-1.5,2.62) [draw=none,fill=none, scale = 0.85] {$3$};
+			\node (ab1) at (-2.3, 2.35) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (af1) at (-2.3, 1.66) [draw=none,fill=none, scale = 0.85] {$6$};
+			\node (fe1) at (-1.5,1.37) [draw=none,fill=none, scale = 0.85] {$8$};
+			\node (ed1) at (-0.67,1.65) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (cd1) at (-0.67,2.35) [draw=none,fill=none, scale = 0.85] {$1$};
+			\node (be1) at (-1.45,2.11) [draw=none,fill=none, scale = 0.85] {$2$};
+			\node (bf1) at (-1.88,2) [draw=none,fill=none, scale = 0.85] {$9$};
+			\node (ec1) at (-0.91,1.99) [draw=none,fill=none, scale = 0.85] {$2$};
+			
+			\draw[] (i) -- (h);
+			\draw[] (i) -- (j);
+			\draw[] (j) -- (k);
+			\draw[] (k) -- (l);
+			\draw[] (l) -- (g);
+			\draw[] (g) -- (h);
+			\draw[] (k) -- (i);
+			\draw[] (l) -- (h);
+			\draw[] (i) -- (l);
+		\end{tikzpicture}   
+	\end{center}
+	\caption{Ilustração de uma árvore geradora de diâmetro mínimo restrita a B = 14. Diâmetro igual a 4.} 
+	\label{fig2}
+\end{figure}
+
+
+\section{Proposta de Pesquisa}
+
+Embora ainda pouco investigado na literatura, o BDMSTP é desafiador e têm um grande potencial de aplicações práticas. Em especial, esse problema foi investigado na dissertação de um dos autores deste projeto\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}} onde foi implementado os primeiros algoritmos exatos para o problema. No entanto, o problema se mostrou bastante complicado quando tomado valores mais restritos de $B$. Assim, gostaríamos de construir uma cadeia de Markov base da seguinte maneira: 
+
+\begin{outline}
+	\1 \textbf{Estados}:
+		\2 Árvores geradoras de $G$. 
+	\1 \textbf{Transições:} 
+		\2 Seja $S_t$ o estado atual:
+	
+			\3 Escolha uniformemente uma aresta $e \in E(G)-E(S_t)$ e adicione à árvore $S_t$, formando um ciclo.
+			\3 Pegue uma aresta $\bar{e}$ aleatória uniformemente do ciclo $C \subseteq E(S_t)$ e delete ela. 
+			\3 Se $\{\bar{e}\} = \{e\}$, então $S_t = S_{t+1}$
+			\3 Caso contrário $S_{t+1} = S_t + \{e\} - \{\bar{e}\}$.
+\end{outline}
+
+Essa cadeia induz um \textbf{passeio aleatório (lazy)} em um grafo não-direcionado associado e todas as transições possuem a mesma probabilidade $\frac{1}{|C|(m-n+1)}$ uniforme. 
+
+Para lidar com a otimização, faremos uso da metaheurística \textit{Simulated Annealing}. Para isso, criaremos uma nova CM com distribuição estacionária igual a distribuição de \textit{Botltzmann}. Usaremos \textit{Metropolis-Hastings} para criar uma agenda de resfriamento, a partir da probabilidade de aceite. A distribuição de \textit{Botltzmann} utiliza $f(s)$, uma função sobre os estados da cadeia. No nosso caso, $f(s)$ retornará o diâmetro da árvore associada ao estado $s$ correspondente e nosso objetivo é minimizá-lo. Além disso, para lidar com a restrição de capacidade, pretendemos trabalhar com penalizações, tanto diretamente no custo ou em $f$. Para finalizar, faremos uma comparação dessas técnicas com os resultados exatos da dissertação\footnote{\url{https://www.cos.ufrj.br/index.php/pt-BR/publicacoes-pesquisa/details/15/2974}}, analisando tempo e eficiência de cada um. 
+
+
+
+%Para (\textbf{1}), pensamos em utilizar a técnica \textbf{rejection sampling} para criar árvores geradoras viáveis a partir de árvores geradoras aleatórias melhorarando sua qualidade com uma busca local.\\
+
+%Para (\textbf{2}), pensamos em dois caminhos:
+%\begin{itemize}
+%	\item Cada estado da cadeia de Markov será uma solução viável de baixa qualidade (diâmetros grandes) para o problema gerada pelo \textit{algoritmo de Prim}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu diâmetro, priorizando minimizar o diâmetro. 
+%	\item Cada estado da cadeia de Markov será uma solução inviável (custo maior que o requisitado) de menor diâmetro possível. O cálculo do menor diâmetro possível em uma árvore geradora é um problema \textit{fácil de resolver}, pois se assemelha ao \textit{1-center problem} \cite{Hassin1995}. As transições entre os estados serão construídas a partir de trocas entre vértices. Usaremos \textit{Metropolis-Hasting} para lidar com as restrições de ciclo e de capacidade. A função pegará cada estado e calculará seu custo total, onde priorizaremos minimizar o custo e tornar o problema viável.
+%\end{itemize}  
+
+
+
+%Figure and table captions should be centered if less than one line
+%(Figure~\ref{fig:exampleFig1}), otherwise justified and indented by 0.8cm on
+%both margins, as shown in Figure~\ref{fig:exampleFig2}. The caption font must
+%be Helvetica, 10 point, boldface, with 6 points of space before and after each
+%caption.
+
+
+%\begin{table}[ht]
+%\centering
+%\caption{Variables to be considered on the evaluation of interaction
+%  techniques}
+%\label{tab:exTable1}
+%\includegraphics[width=.7\textwidth]{table.jpg}
+%\end{table}
+
+
+%\section{References}
+
+%Bibliographic references must be unambiguous and uniform.  We recommend giving
+%the author names references in brackets, e.g. \cite{knuth:84},
+%\cite{boulic:91}, and \cite{smith:99}.
+
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}
