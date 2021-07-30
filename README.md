@@ -7,6 +7,6 @@ Requires [python3](https://docs.python.org/3/), [matplotlib](https://matplotlib.
 
 -------
 
-An example of learning progress expressed as the distance of the path over the time
+An example of learning progress expressed over the temperature
 
 <p align="center"><img src="https://i.imgur.com/aV6b70z.png" width="700"></p> 
