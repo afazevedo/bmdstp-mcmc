@@ -14,10 +14,9 @@ def main(path, B, i):
     '''set the first simulated annealing algorithm params'''
     temp = 100000
     stopping_temp = 0.0001
-    alpha = 0.5
+    alpha = 0.7
     stopping_iter = m-n
-    # stopping_iter = 50
-    
+    stopping_iter = 100
     
     first = SimulatedAnnealing_initial(G, temp, alpha, stopping_temp, stopping_iter, matrix_cost, B)
     temp_initial = first.anneal()
@@ -26,9 +25,7 @@ def main(path, B, i):
     '''set the simulated annealing algorithm params'''
     
     stopping_temp = 0.0001
-    alpha = 0.95
-    # stopping_iter = m-n
-    # print(stopping_iter)
+    alpha = 0.7
     start_time = time.time()
     
     '''run simulated annealing'''
@@ -39,16 +36,14 @@ def main(path, B, i):
     sa.print_solution(start_time)
 
     # '''ploting solution'''
-    sa.plotLearning_diameter()
-    sa.plotLearning_weight()
-    sa.plotLearning_best_solution_diameter()
+    # sa.plotLearning_diameter()
+    # sa.plotLearning_weight()
+    # sa.plotLearning_best_solution_diameter()
     
     
 if __name__ == "__main__":
-    B = [13000]
-    # files = ['D:\\mndzvd\\Documentos\\G
-    # itHub\\project_mcmc\\instances\\c_25_300_d8.txt', 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\fst_75_200.txt', 'D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt']
-    files = ['D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\states_brazil.txt']
+    B = [904.95]
+    files = ['D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\s_v40_a100_d4.txt']
     cont = 0
     for i in files:
         main(i, B[cont], cont)

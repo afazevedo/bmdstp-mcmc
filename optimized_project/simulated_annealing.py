@@ -196,31 +196,31 @@ class SimulatedAnnealing:
         if candidate_diameter < self.curr_diameter or (candidate_diameter == self.curr_diameter and candidate_weight < self.curr_weight):
             # candidate_diameter = candidate_diameter_aux
             
-            aux_candidate = nx.Graph.copy(candidate)
-            spanTree = self.local_search(aux_candidate)
-            if nx.is_connected(spanTree):
-                candidate_diameter = self.calculate_diameter(spanTree)
-                candidate_weight = self.weight(spanTree)
+            # aux_candidate = nx.Graph.copy(candidate)
+            # spanTree = self.local_search(aux_candidate)
+            # if nx.is_connected(spanTree):
+            #     candidate_diameter = self.calculate_diameter(spanTree)
+            #     candidate_weight = self.weight(spanTree)
         
-                if candidate_weight <= self.budget and candidate_diameter <= self.best_diameter:
-                    current = nx.Graph.copy(spanTree)
-                    self.best_solution = current
-                    self.best_diameter = self.calculate_diameter(current)
-                    self.best_solution_history_diameter.append(self.calculate_diameter(current))
-                    self.best_solution_history_weight.append(self.weight(current))
+            #     if candidate_weight <= self.budget and candidate_diameter <= self.best_diameter:
+            #         current = nx.Graph.copy(spanTree)
+            #         self.best_solution = current
+            #         self.best_diameter = self.calculate_diameter(current)
+            #         self.best_solution_history_diameter.append(self.calculate_diameter(current))
+            #         self.best_solution_history_weight.append(self.weight(current))
                 
-                self.curr_diameter = candidate_diameter
-                self.curr_weight = candidate_weight
-                self.curr_solution = spanTree
-                candidate = nx.Graph.copy(spanTree)
-            else:
+            #     self.curr_diameter = candidate_diameter
+            #     self.curr_weight = candidate_weight
+            #     self.curr_solution = spanTree
+            #     candidate = nx.Graph.copy(spanTree)
+            # else:
                 # updates the best solution
-                if candidate_weight <= self.budget and candidate_diameter <= self.best_diameter:
-                    current = nx.Graph.copy(candidate)
-                    self.best_solution = current
-                    self.best_diameter = self.calculate_diameter(current)
-                    self.best_solution_history_diameter.append(self.calculate_diameter(current))
-                    self.best_solution_history_weight.append(self.weight(current))
+            if candidate_weight <= self.budget and candidate_diameter <= self.best_diameter:
+                current = nx.Graph.copy(candidate)
+                self.best_solution = current
+                self.best_diameter = self.calculate_diameter(current)
+                self.best_solution_history_diameter.append(self.calculate_diameter(current))
+                self.best_solution_history_weight.append(self.weight(current))
 
             # update current solutions
             self.curr_diameter = candidate_diameter
@@ -262,10 +262,17 @@ class SimulatedAnnealing:
                 candidate = 0
         
                 if nx.is_connected(spanTree):
-                    candidate = spanTree
-                else: 
-                    candidate = first_candidate
+                    candidate_diameter = self.calculate_diameter(spanTree)
+                    unif = random.random() # generate a uniform number between 0 and 1
+                    if unif < self.acceptance_probability(candidate_diameter):
+                        candidate = spanTree
+                    else:
+                        candidate = first_candidate
+                else:
+                    candidate = first_candidate        
+                        
                 
+
                 # we check whether we transition or not
                 self.accept(candidate)
                 
@@ -301,11 +308,11 @@ class SimulatedAnnealing:
             
             time_total = time.time() - self.start_time
             
-            if time_total >= 1200.0:
+            if time_total >= 3600.0:
                 print("Saiu pelo tempo!")
                 break 
             
-            if 9 in self.best_solution_history_diameter:
+            if 4 in self.best_solution_history_diameter:
                 print("Solução ótima!")
                 break 
     
@@ -440,8 +447,9 @@ class SimulatedAnnealing:
         plt.title("Evolução do peso em função da temperatura durante o algoritmo")
         line_init = plt.axhline(y = self.initial_weight, color='r', linestyle='--')
         line_min = plt.axhline(y = min(self.weight_list), color='g', linestyle='--')
+        line_budget = plt.axhline(y = self.budget, color='purple', linestyle='--', linewidth=2)
         plt.xlim(self.initial_temp, self.temp)
-        plt.legend([line_init, line_min], ['Initial Cost', 'Optimized Cost'])
+        plt.legend([line_init, line_min, line_budget], ['Initial Cost', 'Optimized Cost', 'Budget'])
         plt.ylabel('Cost')
         plt.xlabel('Temperature')
 

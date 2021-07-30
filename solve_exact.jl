@@ -1,7 +1,7 @@
 using LightGraphs: tree
 using DelimitedFiles, Gurobi, JuMP, MathOptInterface, LightGraphs, Colors, GraphPlot 
 
-path = pwd()*"\\instances\\s_v20_a50_d4.txt"
+path = pwd()*"\\instances\\s_v40_a100_d4.txt"
 n = readdlm(path, Int64)[1,1]
 m = readdlm(path, Int64)[1,2]
 L = Int((n)/2) 
@@ -19,12 +19,12 @@ end
 
 
 model = Model(Gurobi.Optimizer)
-set_optimizer_attribute(model, "Presolve", 0)
-set_optimizer_attribute(model, "Cuts", 0)
-set_optimizer_attribute(model, "Heuristics", 0)
-set_optimizer_attribute(model, "Threads", 1)
+# set_optimizer_attribute(model, "Presolve", 0)
+# set_optimizer_attribute(model, "Cuts", 0)
+# set_optimizer_attribute(model, "Heuristics", 0)
+# set_optimizer_attribute(model, "Threads", 1)
 
-B = 600
+B = 904.95
 
 #Conjuntos
 V = 1:n
