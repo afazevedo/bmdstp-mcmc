@@ -1,7 +1,7 @@
 using LightGraphs: tree
 using DelimitedFiles, Gurobi, JuMP, MathOptInterface, LightGraphs, Colors, GraphPlot 
 
-path = pwd()*"\\instances\\s_v40_a100_d4.txt"
+path = pwd()*"\\instances\\states_brazil.txt"
 n = readdlm(path, Int64)[1,1]
 m = readdlm(path, Int64)[1,2]
 L = Int((n)/2) 
@@ -17,14 +17,13 @@ for k in 2:m
     c[j,i] = c[i,j]
 end
 
-
 model = Model(Gurobi.Optimizer)
-# set_optimizer_attribute(model, "Presolve", 0)
-# set_optimizer_attribute(model, "Cuts", 0)
-# set_optimizer_attribute(model, "Heuristics", 0)
-# set_optimizer_attribute(model, "Threads", 1)
+set_optimizer_attribute(model, "Presolve", 0)
+set_optimizer_attribute(model, "Cuts", 0)
+set_optimizer_attribute(model, "Heuristics", 0)
+set_optimizer_attribute(model, "Threads", 1)
 
-B = 904.95
+B = 13000
 
 #Conjuntos
 V = 1:n
@@ -146,9 +145,6 @@ x = (
     )
 
 
-# sum(c[13,14] + c[14,15])
-
-
 nodelabel = []
 for i in x
     push!(nodelabel, i.second)
@@ -161,41 +157,3 @@ map[n+1] = 2
 nodefill = nodecolor[map]
 gplot(g, nodefillc=nodefill)
 
-
-# function MST(G,c,n)
-#     mst = LightGraphs.SimpleGraph(n)
-#     cost = 0
-#     for k in 1:n-1
-#         i = src(data[k])
-#         j = dst(data[k])
-#         add_edge!(mst, i, j)
-#         cost = cost + c[i,j]
-#     end
-#     return cost, mst
-# end
-
-# g = SimpleGraph(n)
-
-# for i in 1:n
-#     for j in 1:n
-#         if c[i,j] > 0.0001
-#             add_edge!(g, i, j)
-#         end 
-#     end
-# end
-
-
-# cost, mst = MST(g, c, n)
-
-# nodelabel = []
-# for i in x
-#     push!(nodelabel, i.second)
-# end 
-
-
-# nodecolor = [colorant"greenyellow", colorant"teal", colorant"red", colorant"blue"]
-# map = ones(Int, n)
-# nodefill = nodecolor[map]
-# gplot(mst, nodefillc=nodefill, nodelabel=nodelabel)
-
-# diameter(mst)

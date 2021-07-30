@@ -3,29 +3,34 @@ from simulated_annealing import SimulatedAnnealing
 from simulated_temperature import SimulatedAnnealing_initial
 from read_files import *
 import time
+import os 
 
-def main(path, B, i):
-    print("Log instance: ", path[51:], " with budget: ", B)
+def main():
+    cwd = os.getcwd()+'\\instances\\'
+    instance = 'states_brazil.txt'
+    path = cwd+instance
     
     '''set instances parameters'''
     n, m, matrix_cost = readFiles(path, True)
     G = create_graph(n, matrix_cost)
+    B = 13000
     
-    '''set the first simulated annealing algorithm params'''
+    print("Instance: {} with {} nodes and {} edges".format(instance, n, m))
+    print("Budget: ", B)
+    
+    '''set the simulated annealing algorithm params'''
     temp = 100000
     stopping_temp = 0.0001
     alpha = 0.7
     stopping_iter = m-n
-    stopping_iter = 100
     
     first = SimulatedAnnealing_initial(G, temp, alpha, stopping_temp, stopping_iter, matrix_cost, B)
     temp_initial = first.anneal()
-    print('Temperatura inicial: ', temp_initial)
+    print('Initial temperature: ', temp_initial)
+    print("Maximum iteration: ", stopping_iter)
+    print("Tolerance: ", stopping_temp)
     
-    '''set the simulated annealing algorithm params'''
-    
-    stopping_temp = 0.0001
-    alpha = 0.7
+    '''start time'''
     start_time = time.time()
     
     '''run simulated annealing'''
@@ -36,18 +41,13 @@ def main(path, B, i):
     sa.print_solution(start_time)
 
     # '''ploting solution'''
-    # sa.plotLearning_diameter()
-    # sa.plotLearning_weight()
-    # sa.plotLearning_best_solution_diameter()
-    
+    sa.plotLearning_diameter()
+    sa.plotLearning_weight()
+    sa.plotLearning_best_solution_diameter()
     
 if __name__ == "__main__":
-    B = [904.95]
-    files = ['D:\\mndzvd\\Documentos\\GitHub\\project_mcmc\\instances\\s_v40_a100_d4.txt']
-    cont = 0
-    for i in files:
-        main(i, B[cont], cont)
-        cont += 1
+    main()
+
 
 
 

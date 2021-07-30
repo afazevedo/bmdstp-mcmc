@@ -40,8 +40,7 @@ class SimulatedAnnealing_initial:
         self.original_graph = original_graph
         self.dist_matrix = matrix_cost
         self.budget = B
-        # self.curr_solution = generate_random_tree(self.original_graph)
-        self.curr_solution = mst(self.original_graph, self.dist_matrix)
+        self.curr_solution = generate_random_tree(self.original_graph)
         
         # set initial weight parameters
         self.curr_weight = self.weight(self.curr_solution)

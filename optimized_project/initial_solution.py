@@ -77,11 +77,3 @@ def generate_random_tree(G):
 
     return random_tree
 
-def mst(graph, C):
-    b_tree = nx.Graph()
-    mst = nx.minimum_spanning_edges(graph, algorithm="prim", data=False)
-    edges_lists = list(mst)
-    for i in edges_lists:
-        nx.Graph.add_edge(b_tree, i[0], i[1])
-        
-    return b_tree
